@@ -4,8 +4,8 @@
   "description": "Flexible API to return images optionally using Unsplash, with fallback",
   "main": "index.js",
   "scripts": {
-    "build": "npx tsc --listEmittedFiles && netlify-lambda build src-compiled/functions",
-    "start": "netlify-lambda serve src-compiled/functions"
+    "build": "npx tsc --listEmittedFiles && netlify-lambda build src-functions",
+    "start": "netlify-lambda serve src-functions"
   },
   "repository": {
     "type": "git",

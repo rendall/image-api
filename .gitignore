@@ -1,6 +1,7 @@
 .env
 .netlify
+/cache/
 /functions/
-/src-compiled/
-cache/
+/public/index.js
+/src-functions/
 node_modules
