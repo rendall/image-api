@@ -10,13 +10,13 @@ const onInputChange = () => {
   const value = input.value
   const tap = (x:any) => { console.log(x); return x}
 
-  fetch(`.netlify/functions/image?query=${value}`)
+  fetch(`.netlify/functions/image?query=${value}&type=regular`)
   .then(tap)
   .then((response:Response) => response.json())
   .then(tap)
   .then((data:APIResponse) => {
     const img = document.getElementById("image") as HTMLImageElement
-    img.src = `${data.src}&w=1000&h=1000`
+    img.src = `${data.src}`
     img.alt = data.alt
 
     const code = document.getElementById("code") as HTMLDivElement
