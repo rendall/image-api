@@ -8,7 +8,7 @@
     img {
       display: block;
       max-width: 100%;
-      margin: 1rem 0;
+      margin-top: 1rem;
     }
 
     .rate-limit {
@@ -17,6 +17,15 @@
 
     .rate-limit.is-on {
       visibility: visible;
+    }
+
+    .credit-link-container {
+      display: none;
+      margin-bottom: 1rem;
+    }
+
+    .credit-link-container.is-on {
+      display: block;
     }
   </style>
 </head>
@@ -29,6 +38,9 @@
   <input id="query-input" onchange="onInputChange" />
   <button id="search-button">Search</button>
   <img id="image" />
+  <div class="credit-link-container">
+    Photographer: <a id="credit-link"></a>
+  </div>
   <code id="code"></code>
   <p class="rate-limit">There are <span id="remaining">50</span> requests
     remaining in the <a href="https://unsplash.com/documentation#rate-limiting">rate limit</a></p>

@@ -45,7 +45,9 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
       const remaining:number = d.remaining
       // learn more about blur hashes at https://blurha.sh
       const blur_hash: string = result.blur_hash
-      return JSON.stringify({ src, blur_hash, alt, remaining })
+      const {name, portfolio_url} = result.user
+      const credit = { name, portfolio_url }
+      return JSON.stringify({ src, blur_hash, alt, remaining, credit })
     }
     return isError(data) ? data : { statusCode, body: successBody(data) }
   } catch (error) {
