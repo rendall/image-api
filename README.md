@@ -1,6 +1,6 @@
 # Image API
 
-Image API is an endpoint for returning image URLs and metadata given a keyword and other parameters using the Unsplash API.
+Image API is an endpoint for returning image URLs and metadata given a keyword and other parameters using the Unsplash API. A working example here <https://festive-heisenberg-a17d11.netlify.app/>
 
 You would use it like any api. A call to `/api/image?term=lime&type=regular` might return a json object like this:
 
@@ -42,10 +42,10 @@ Note that the Unsplash Terms of Service requires you to keep this key confidenti
   * fill out the forms,
   * read and accept the agreements, and then
   * find the *Keys* section on your app's page, and
-  * copy the *Access Key*. It will look something like this `Zqgh}FOwN42Aq[Y2RN_;x]KtHAx7Ct`
+  * copy the *Access Key*. It will look something like this `Zqgh-FOwN42Aq_Y2RN_tx]KtHAx7Ct`
 * Paste the access key into `.env`, replacing the `your-unsplash-api-key-here` with your API key, so it should look something like this:
 
-`UNSPLASH_API=Zqgh}FOwN42Aq[Y2RN_;x]KtHAx7Ct`
+`UNSPLASH_API=Zqgh-FOwN42Aq_Y2RN_tx]KtHAx7Ct`
 
 ## Netlify / AWS Lambda
 
