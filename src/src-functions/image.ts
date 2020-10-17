@@ -37,7 +37,6 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
     const data = await apiImageSearch(query, { pageNum })
     const isError = (r: StatusError | UnsplashSuccess): r is StatusError => r.hasOwnProperty("statusMessage")
     const statusCode = isError(data) ? 500 : 200
-    // Return a result with one of these tags, in order
     /** In this function, filter, modify and return the result that works best in your project */
     const successBody = (d: UnsplashSuccess) => {
       // Currently, it just randomly picks one of the 20 results returned from unsplash
@@ -57,55 +56,15 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
 }
 
 /** Receive search term and parameters, return response or cached response */
-const apiImageSearch = async (searchTerm: string, options = { pageNum: 1 }): Promise<StatusError | UnsplashSuccess> => {
-  const term = searchTerm.replace(/\W/g, "-")
-  const { pageNum } = options
-  const dir = `./cache/`
-  const fileCount = pageNum === 1 ? "" : `${pageNum}.`
-
-  // image-api caches the responses as json files on the server
-  // and will serve those instead
-  const filename = `${dir}unsplash-${term}.${fileCount}json`
-
-  try {
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir);
-    }
-  } catch (error) {
-    console.error(`Unable to make directory ${dir}`, error)
-  }
-  try {
-
-    // returns true if the file is older than CACHE_EXPIRATION_TIME time
-    const isExpired = (filename: string, stats?: fs.Stats): boolean => stats === undefined ? isExpired(filename, fs.statSync(filename)) : new Date().valueOf() - stats.birthtimeMs > CACHE_EXPIRATION_TIME
-
-    // return the contents of `./cache/filename` if it exists and is not expired
-    if (fs.existsSync(filename) && !isExpired(filename)) {
-      const file = fs.readFileSync(filename, { encoding: 'utf8', flag: 'r' })
-      const result = JSON.parse(file) as UnsplashSuccess
-      return result
-    }
-  } catch (error) {
-    console.error("Non-fatal file write error (reply not cached):", { error })
-  }
+const apiImageSearch = async (query: string, options = { pageNum: 1 }): Promise<StatusError | UnsplashSuccess> => {
 
   try {
     if (process.env.UNSPLASH_API === undefined || process.env.UNSPLASH_API === "your-unsplash-api-key-here") {
       throw new Error("Unsplash access key is undefined. Consult the README file for more information")
     }
 
-    const response: StatusError | UnsplashSuccess = await unsplashPhotoSearch(term)
+    const response: StatusError | UnsplashSuccess = await unsplashPhotoSearch(query)
 
-    const isError = (r: StatusError | UnsplashSuccess): r is StatusError => r.hasOwnProperty("errors")
-    if (!isError(response)) {
-      try {
-        const ws = fs.createWriteStream(filename)
-        ws.write(JSON.stringify(response))
-        ws.end()
-      } catch (error) {
-        console.error(`Could not write file '${filename}'`)
-      }
-    }
     return response
 
   } catch (error) {
