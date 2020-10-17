@@ -1,4 +1,5 @@
 .env
 cache/
-functions/
+/functions/
+/src-compiled/
 node_modules
