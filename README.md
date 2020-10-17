@@ -65,3 +65,4 @@ The endpoint is served from a [lambda function](https://aws.amazon.com/lambda/) 
 * Under *VARIABLE_NAME* put `UNSPLASH_API`
 * Under its corresponding value put your Unsplash API Key
 * Click *Deploy Site*
+* After a few moments your site will be deployed and you will receive a link
