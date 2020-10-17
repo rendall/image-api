@@ -28,6 +28,7 @@ const onInputChange = () => {
 
       const remainingDisplay = document.getElementById("remaining") as HTMLSpanElement
       remainingDisplay.innerHTML = data.remaining
+      document.querySelector(".rate-limit")?.classList.add("is-on")
 
       const creditLink = document.getElementById("credit-link") as HTMLAnchorElement
       creditLink.innerText = data.credit.name
@@ -36,15 +37,8 @@ const onInputChange = () => {
       const creditLinkContainer = document.querySelector(".credit-link-container")
       creditLinkContainer!.classList.add("is-on")
 
+
     })
-
-
-  // Let's turn on the rate-limit notice
-  document.querySelector(".rate-limit")?.classList.add("is-on")
-
-
-
 }
-
 
 document.getElementById("search-button")?.addEventListener("click", onInputChange)
