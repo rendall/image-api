@@ -1,5 +1,6 @@
 .env
-cache/
+.netlify
 /functions/
 /src-compiled/
+cache/
 node_modules
