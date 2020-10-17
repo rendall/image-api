@@ -27,14 +27,16 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
   const pageNum: number = pageQuery && Number.parseInt(pageQuery) ? Number.parseInt(pageQuery) : 1
   type TypeQuery = "raw" | "small" | "thumb" | "regular" | "full"
   const typeQuery: TypeQuery = extractParam("type") as TypeQuery || "raw"
+
   if (!searchQuery || searchQuery.length === 0) return {
     statusCode: 400,
     body: `Missing "query" parameter as a GET query string, e.g. "image?query=lime"`
   }
+
   const cleanString = (str: string) => str.trim().toLowerCase().replace(/\W /, "")
   const query = cleanString(searchQuery)
   try {
-    const data = await apiImageSearch(query, { pageNum })
+    const data: StatusError | UnsplashSuccess = await unsplashPhotoSearch(query)
     const isError = (r: StatusError | UnsplashSuccess): r is StatusError => r.hasOwnProperty("statusMessage")
     const statusCode = isError(data) ? 500 : 200
     /** In this function, filter, modify and return the result that works best in your project */
@@ -55,25 +57,11 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
   }
 }
 
-/** Receive search term and parameters, return response or cached response */
-const apiImageSearch = async (query: string, options = { pageNum: 1 }): Promise<StatusError | UnsplashSuccess> => {
-
-  try {
-    if (process.env.UNSPLASH_API === undefined || process.env.UNSPLASH_API === "your-unsplash-api-key-here") {
-      throw new Error("Unsplash access key is undefined. Consult the README file for more information")
-    }
-
-    const response: StatusError | UnsplashSuccess = await unsplashPhotoSearch(query)
-
-    return response
-
-  } catch (error) {
-    return { statusCode: 500, statusMessage: `${error.name}: ${error.message}` }
-  }
-}
-
 /* This is a low-level call to the API without editorial */
 const unsplashPhotoSearch = (query: string) => new Promise<UnsplashSuccess | StatusError>((resolve, reject) => {
+
+  if (process.env.UNSPLASH_API === undefined || process.env.UNSPLASH_API === "your-unsplash-api-key-here") { throw new Error("Unsplash access key is undefined. Consult the README file for more information") }
+
   const hostname = `${API_HOST}`
   const path = `${API_PATH}?query=${query}`
   const headers = {
@@ -90,7 +78,7 @@ const unsplashPhotoSearch = (query: string) => new Promise<UnsplashSuccess | Sta
 
     res.on("error", (error) => {
       res.resume()
-      reject({ statusCode:500, statusMessage:`${error.name}: ${error.message}` })
+      reject({ statusCode: 500, statusMessage: `${error.name}: ${error.message}` })
     })
 
     let dump = ""
