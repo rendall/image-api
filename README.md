@@ -50,3 +50,18 @@ Note that the Unsplash Terms of Service requires you to keep this key confidenti
 ## Netlify / AWS Lambda
 
 The endpoint is served from a [lambda function](https://aws.amazon.com/lambda/) but can be modified to be served from anywhere
+
+### Netlify
+
+[Netlify](https://netlify.com) is free-tier serverless hosting service. To serve this project from Netlify:
+
+* Fork this repo
+* Sign up for a free account at Netlify
+* [Create a new site](https://app.netlify.com/start)
+* Choose *Github*
+* Authorize the [Netlify App](https://github.com/apps/netlify/installations/new)
+* Choose the Github repo that holds this project
+* Click *Show advanced* and then *New variable*
+* Under *VARIABLE_NAME* put `UNSPLASH_API`
+* Under its corresponding value put your Unsplash API Key
+* Click *Deploy Site*
