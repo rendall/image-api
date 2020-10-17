@@ -1,6 +1,5 @@
 import * as http from "https"
 import dotenv from "dotenv";
-import fs from "fs"
 import type { Context, APIGatewayEvent } from "aws-lambda"
 import type { ClientRequest, IncomingMessage } from 'http';
 import type { UnsplashSuccess, UnsplashResult } from "./unsplash-types";
@@ -13,9 +12,6 @@ const TIMEOUT_ERROR_STATUS_CODE = 504 // As a const, to clarify meaning of '504'
 const API_HOST = "api.unsplash.com"
 const API_PATH = "/search/photos"
 
-// The time the cache should be overwritten after creation, in MS
-const CACHE_EXPIRATION_TIME = 24 * 60 * 60 * 1000
-
 dotenv.config() // This incorporates your Unsplash API access key from the .env file
 
 /** Endpoint handler receives the request and returns the response */
@@ -23,8 +19,6 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
   if (event.httpMethod !== "GET") return { statusCode: 405, body: `Method "${event.httpMethod}" not allowed` }
   const extractParam = (param: string) => event.queryStringParameters && event.queryStringParameters[param]
   const searchQuery = extractParam("query")
-  const pageQuery = extractParam("page")
-  const pageNum: number = pageQuery && Number.parseInt(pageQuery) ? Number.parseInt(pageQuery) : 1
   type TypeQuery = "raw" | "small" | "thumb" | "regular" | "full"
   const typeQuery: TypeQuery = extractParam("type") as TypeQuery || "raw"
 
@@ -39,9 +33,10 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
     const data: StatusError | UnsplashSuccess = await unsplashPhotoSearch(query)
     const isError = (r: StatusError | UnsplashSuccess): r is StatusError => r.hasOwnProperty("statusMessage")
     const statusCode = isError(data) ? 500 : 200
-    /** In this function, filter, modify and return the result that works best in your project */
+    /** In this function, filter, and modify to return the result that works best in your project */
     const successBody = (d: UnsplashSuccess) => {
-      // Currently, it just randomly picks one of the 20 results returned from unsplash
+      // Currently, it just randomly picks one of the 10 results returned from unsplash
+      // but it's possible to do some more filtering here, by tag title perhaps
       const pickRandomResult = (r: UnsplashResult[]) => r[Math.floor(Math.random() * r.length)]
       const result = pickRandomResult(d.results)
       // Here you could return a srcset rather than a single src
@@ -49,8 +44,8 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
       const alt: string = result.alt_description
       const remaining:number = d.remaining
       // learn more about blur hashes at https://blurha.sh
-      const blurHash: string = result.blur_hash
-      return JSON.stringify({ src, blurHash, alt, remaining })
+      const blur_hash: string = result.blur_hash
+      return JSON.stringify({ src, blur_hash, alt, remaining })
     }
     return isError(data) ? data : { statusCode, body: successBody(data) }
   } catch (error) {
@@ -73,8 +68,6 @@ const unsplashPhotoSearch = (query: string) => new Promise<UnsplashSuccess | Sta
 
   const onResponse = (res: IncomingMessage) => {
     const { statusCode, statusMessage } = res
-    console.info(`Received response ${statusMessage}`)
-    console.info("headers", res.headers)
     if (!statusCode || statusCode !== 200) reject({ statusCode, statusMessage })
 
     res.on("error", (error) => {
@@ -85,9 +78,9 @@ const unsplashPhotoSearch = (query: string) => new Promise<UnsplashSuccess | Sta
     let dump = ""
     res.on("data", data => (dump += data))
     res.on("end", () => {
-      console.info(`dump end`)
       try {
         const dumpJson = JSON.parse(dump)
+        // This adds the remaining requests available. For more information on these headers: https://unsplash.com/documentation#rate-limiting
         const json = {...dumpJson, remaining:res.headers['x-ratelimit-remaining']}
         resolve(json)
       } catch (error) {
@@ -97,7 +90,6 @@ const unsplashPhotoSearch = (query: string) => new Promise<UnsplashSuccess | Sta
   }
 
   const request: ClientRequest = http.get(requestOptions, onResponse)
-  console.info(`Sent request`)
   const onTimeout = () => request.abort()
   const onRequestError = (error: Error) => {
     switch (error.message) {
