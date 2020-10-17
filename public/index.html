@@ -4,16 +4,29 @@
 <head>
   <title>Image API</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    img {
+      display: block;
+    }
+
+    .rate-limit {
+      visibility: hidden;
+    }
+    .rate-limit.is-on {
+      visibility: visible;
+    }
+  </style>
 </head>
 
 <body>
   <h1>Image API</h1>
   <p>This is a small frontend to the open-source <a href="https://github.com/rendall/image-api/">Image API</a> which
     itself a wrapper for <a href="https://unsplash.com">Unsplash</a>, the image-as-a-service provider</p>
+  <p class="rate-limit">Note that there is a rate-limit of 50 requests per hour with <span id="remaining">50</span> remaining</p>
   <p>Enter a search term below:</p>
   <input id="query-input" onchange="onInputChange" />
   <button id="search-button">Search</button>
-  <img id="image"/>
+  <img id="image" />
   <code id="code"></code>
   <script src="index.js"></script>
 </body>

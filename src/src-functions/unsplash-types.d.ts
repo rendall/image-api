@@ -6,6 +6,7 @@ export interface UnsplashSuccess {
     total:       number;
     total_pages: number;
     results:     UnsplashResult[];
+    remaining:   number;
 }
 
 export interface UnsplashResult {

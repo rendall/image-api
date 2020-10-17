@@ -47,9 +47,10 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
       // Here you could return a srcset rather than a single src
       const src: string = result.urls[typeQuery]
       const alt: string = result.alt_description
+      const remaining:number = d.remaining
       // learn more about blur hashes at https://blurha.sh
       const blurHash: string = result.blur_hash
-      return JSON.stringify({ src, blurHash, alt })
+      return JSON.stringify({ src, blurHash, alt, remaining })
     }
     return isError(data) ? data : { statusCode, body: successBody(data) }
   } catch (error) {
@@ -86,7 +87,8 @@ const unsplashPhotoSearch = (query: string) => new Promise<UnsplashSuccess | Sta
     res.on("end", () => {
       console.info(`dump end`)
       try {
-        const json = JSON.parse(dump)
+        const dumpJson = JSON.parse(dump)
+        const json = {...dumpJson, remaining:res.headers['x-ratelimit-remaining']}
         resolve(json)
       } catch (error) {
         reject({ statusCode: 500, statusMessage: `${error.name}: ${error.message}` })
