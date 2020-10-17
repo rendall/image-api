@@ -24,6 +24,7 @@ This project is designed to be used directly in your current project, so copy al
 * `cd image-api`
 * `npm install`
 * `npm start`
+* Visit <http://localhost:9000/.netlify/functions/image?term=lime&type=regular>
 
 ## Unsplash
 
@@ -35,11 +36,14 @@ To use Unsplash with this project, you will need an API key, which you can get b
 
 Note that the Unsplash Terms of Service requires you to keep this key confidential. This project will keep your key confidential by using [dotenv](https://github.com/motdotla/dotenv)
 
-Copy the [.env.example](.env.example) file and rename it to `.env` (remove the `.example` part)
-
-Click "New Application", fill out the forms, read and accept the agreements, and then find the *Keys* section on your app's page, and copy the *Access Key*
-
-Paste it into `.env`, replacing the `your-unsplash-api-key-here` with your API key, so it should look something like this:
+* Copy the [.env.example](.env.example) file and rename it to `.env` (remove the `.example` part)
+* Go to <https://unsplash.com/oauth/applications>
+  * Click "New Application",
+  * fill out the forms,
+  * read and accept the agreements, and then
+  * find the *Keys* section on your app's page, and
+  * copy the *Access Key*. It will look something like this `Zqgh}FOwN42Aq[Y2RN_;x]KtHAx7Ct`
+* Paste the access key into `.env`, replacing the `your-unsplash-api-key-here` with your API key, so it should look something like this:
 
 `UNSPLASH_API=Zqgh}FOwN42Aq[Y2RN_;x]KtHAx7Ct`
 
