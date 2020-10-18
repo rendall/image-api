@@ -45,8 +45,6 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
     const statusCode = isError(data) ? 500 : 200
     /** In this function, filter, and modify to return the result that works best in your project */
     const successBody = (d: UnsplashSuccess) => {
-
-      console.log("success!", d)
       // Currently, it just randomly picks one of the 10 results returned from unsplash
       // but it's possible to do some more filtering here, by tag title perhaps
       const pickRandomResult = (r: UnsplashResult[]) => r[Math.floor(Math.random() * r.length)]
@@ -61,7 +59,8 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
       const blur_hash: string = result.blur_hash
       const blur_hash_width = sizeQuery === "thumb"? 200 : sizeQuery === "small"? 400 : sizeQuery === "regular"? 1080 : result.width
       const blur_hash_height = Math.round(blur_hash_width * (result.height / result.width))
-      const { name, portfolio_url } = result.user
+      const name = result.user.name
+      const portfolio_url = result.user.portfolio_url? result.user.portfolio_url : result.user.links.html
       const credit = { name, portfolio_url }
       const resultsObj = perPageQuery > 1 ? d : { src, blur_hash, blur_hash_width, blur_hash_height, alt, credit, ...fieldObj }
       return JSON.stringify({ ...resultsObj, remaining })
@@ -70,7 +69,7 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
     else if (data.results.length === 0) return { statusCode:404, body: `No results for '${query}'`}
     else return { statusCode, body: successBody(data) }
   } catch (error) {
-    return { statusCode: 500, body: `${error.name}: ${error.message}` }
+    return { statusCode: 500, body: `Handler response error: ${error.name}: ${error.message}` }
   }
 }
 
@@ -98,7 +97,7 @@ const unsplashPhotoSearch = (queryParam: string, page:number, per_page:number) =
 
     res.on("error", (error) => {
       res.resume()
-      reject({ statusCode: 500, body: `${error.name}: ${error.message}` })
+      reject({ statusCode: 500, body: `Response error event: ${error.name}: ${error.message} ${error.stack}` })
     })
 
     let dump = ""
@@ -110,7 +109,7 @@ const unsplashPhotoSearch = (queryParam: string, page:number, per_page:number) =
         const json = { ...dumpJson, remaining: res.headers['x-ratelimit-remaining'] }
         resolve(json)
       } catch (error) {
-        reject({ statusCode: 500, body: `${error.name}: ${error.message}` })
+        reject({ statusCode: 500, body: `Incoming Message JSON encoding error: ${error.name}: ${error.message}` })
       }
     })
   }
@@ -126,7 +125,7 @@ const unsplashPhotoSearch = (queryParam: string, page:number, per_page:number) =
         }
       default:
         console.error(error)
-        reject({ statusCode: 500, body: `${error.name}: ${error.message}` })
+        reject({ statusCode: 500, body: `Request error: ${error.name}: ${error.message} ${error.stack}` })
         break
     }
   }
@@ -134,7 +133,7 @@ const unsplashPhotoSearch = (queryParam: string, page:number, per_page:number) =
   request.addListener("error", onRequestError)
   request.setTimeout(TIMEOUT_MS, onTimeout)
 
-}).catch((error: Error) => ({ statusCode: 500, body: `${error.name}: ${error.message}` }))
+}).catch((error: Error) => ({ statusCode: 500, body: `General error: ${error.name}: ${error.message} ${error.stack}` }))
 
 /*
 <img
