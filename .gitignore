@@ -2,6 +2,6 @@
 .netlify
 /cache/
 /functions/
-/public/index.js
+/public/*.js
 /src-functions/
 node_modules
