@@ -7,9 +7,12 @@
   <style>
     img {
       display: block;
-      margin-top: 1rem;
-      max-height: calc(100vh - 16rem);
-      max-width: 100%;
+      background-repeat: no-repeat;
+      background-size: contain;
+    }
+
+    .image-container {
+      position: relative;
     }
 
     code {
@@ -35,6 +38,7 @@
       display: block;
     }
   </style>
+  <script src="./blurhash.js" type="module"></script>
 </head>
 
 <body>
@@ -42,7 +46,7 @@
   <p>This is a small frontend to the open-source <a href="https://github.com/rendall/image-api/">Image API</a> which
     itself a wrapper for <a href="https://unsplash.com">Unsplash</a>, the image-as-a-service provider</p>
   <p>Enter a search term below:</p>
-  <input id="query-input" onchange="onInputChange" />
+  <input id="query-input" />
   <button id="search-button">Search</button>
   <img id="image" />
   <div class="credit-link-container">
@@ -51,7 +55,7 @@
   <code id="code"></code>
   <p class="rate-limit">There are <span id="remaining">50</span> requests
     remaining in the <a href="https://unsplash.com/documentation#rate-limiting">rate limit</a></p>
-  <script src="index.js"></script>
+  <script src="index.js" type="module"></script>
 </body>
 
 </html>
