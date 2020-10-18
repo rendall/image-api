@@ -45,6 +45,8 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
     const statusCode = isError(data) ? 500 : 200
     /** In this function, filter, and modify to return the result that works best in your project */
     const successBody = (d: UnsplashSuccess) => {
+
+      console.log("success!", d)
       // Currently, it just randomly picks one of the 10 results returned from unsplash
       // but it's possible to do some more filtering here, by tag title perhaps
       const pickRandomResult = (r: UnsplashResult[]) => r[Math.floor(Math.random() * r.length)]
@@ -65,6 +67,7 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
       return JSON.stringify({ ...resultsObj, remaining })
     }
     if (isError(data)) { console.error("error", data); return data } 
+    else if (data.results.length === 0) return { statusCode:404, body: `No results for '${query}'`}
     else return { statusCode, body: successBody(data) }
   } catch (error) {
     return { statusCode: 500, body: `${error.name}: ${error.message}` }
