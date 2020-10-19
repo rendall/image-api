@@ -98,6 +98,8 @@ The endpoint is served from a [lambda function](https://aws.amazon.com/lambda/) 
 
 ### Netlify
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/ce6d84b4-b4d6-4345-976d-e74564cbcdbe/deploy-status)](https://app.netlify.com/sites/festive-heisenberg-a17d11/deploys)
+
 [Netlify](https://netlify.com) is free-tier serverless hosting service. To serve this project from Netlify:
 
 * [Fork](https://guides.github.com/activities/forking/) this repo
