@@ -13,15 +13,21 @@ type APIResponse = {
   src: string
   width?: number
   height?: number
+  links?: {
+    self: string
+    html: string
+    download: string
+    download_location: string
+  }
 }
 
 /** takes a blurhash and full dimensions of a picture, returns a dataURL */
-const renderBlurHash = (hash: string, width: number, height: number) => {
+const blurhashToDataURL = (blurhash: string, width: number, height: number) => {
 
   const scale = 4
   const bw = Math.floor(width / scale)
   const bh = Math.floor(height / scale)
-  const pixels = decode(hash, bw, bh);
+  const pixels = decode(blurhash, bw, bh);
 
   const canvas = document.createElement("canvas")
   canvas.width = bw
@@ -33,7 +39,9 @@ const renderBlurHash = (hash: string, width: number, height: number) => {
   imageData.data.set(pixels);
   ctx!.putImageData(imageData, 0, 0);
 
-  return canvas.toDataURL()
+  const dataUrl = canvas.toDataURL()
+
+  return dataUrl
 }
 
 const uiReset = () => {
@@ -44,6 +52,9 @@ const uiReset = () => {
   document.querySelector(".rate-limit")?.classList.remove("is-on")
   const creditLinkContainer = document.querySelector(".credit-link-container")
   creditLinkContainer!.classList.remove("is-on")
+
+  const dlButton = document.querySelector(".download-button") as HTMLButtonElement
+  if (dlButton) dlButton.remove()
 }
 
 const onInputChange = () => {
@@ -53,8 +64,7 @@ const onInputChange = () => {
 
   uiReset()
 
-
-  fetch(`.netlify/functions/image?query=${value}&size=regular&orientation=landscape`)
+  fetch(`.netlify/functions/image?query=${value}&size=regular`)
     .then(tap)
     .then((response: Response) => {
       if (response.status !== 200) {
@@ -70,7 +80,7 @@ const onInputChange = () => {
     .then(tap)
     .then((data: APIResponse) => {
       if (!data) return
-      const dataURL = renderBlurHash(data.blur_hash, data.blur_hash_width, data.blur_hash_height)
+      const dataURL = blurhashToDataURL(data.blur_hash, data.blur_hash_width, data.blur_hash_height)
       const img = document.createElement("img") as HTMLImageElement
       document.getElementById("image-container")?.appendChild(img)
 
@@ -79,11 +89,6 @@ const onInputChange = () => {
       img.setAttribute("style", currStyle)
 
 
-      img.addEventListener("load", () => {
-        img.removeAttribute("height");
-        img.removeAttribute("width")
-        img.alt = data.alt
-      })
 
       // Introducing a slight delay to show off the blur_hash
       // This was hard to get right
@@ -107,14 +112,15 @@ const onInputChange = () => {
       // get its current (maximum) height and width
       const { width, height } = img
 
-      // Keeping aspect ratio, adjustedHeight would be the height if the width is maximum
+      // Keeping aspect ratio, adjustedHeight would be the height at maximum width
       const adjustedHeight = Math.floor(img.width * (data.blur_hash_height / data.blur_hash_width))
 
-      // Likewise, adjustedWidth is the proportional width of the image when the height is set to its maximum
+      // Likewise, adjustedWidth is the proportional width at maximum height
       const adjustedWidth = Math.floor(img.height * (data.blur_hash_width / data.blur_hash_height))
 
+      // Which to use? adustedHeight or adjustedWidth?
       // if adustedHeight is greater than allowed height, then we have to adjust the width
-      if (adjustedHeight > width) {
+      if (adjustedHeight > height) {
         img.width = adjustedWidth
         img.height = height
         img.setAttribute("style", `${currStyle} height: ${height}px;`);
@@ -125,6 +131,18 @@ const onInputChange = () => {
         img.setAttribute("style", `${currStyle} width: ${width}px;`);
       }
 
+      // Finally, remove the height and width attributes at load, and let CSS take care
+      // of all adjustments, which *should* have exact same dimensions so there is no jump
+      img.addEventListener("load", () => {
+        img.removeAttribute("height");
+        img.removeAttribute("width")
+        img.alt = data.alt
+      })
+
+
+      // There is a weird jump if this info is showing before the image
+      // gets its correct height, so hide it at the beginning
+      // and show it now at the end
       const code = document.getElementById("code") as HTMLDivElement
       code.innerHTML = JSON.stringify(data, null, 2)
       const remainingDisplay = document.getElementById("remaining") as HTMLSpanElement
@@ -135,10 +153,26 @@ const onInputChange = () => {
       creditLink.href = data.credit.portfolio_url
       const creditLinkContainer = document.querySelector(".credit-link-container")
       creditLinkContainer!.classList.add("is-on")
+
+      // This is left for a future download button for qualifying as 
+      // in "production" https://unsplash.com/documentation#registering-your-application
+      // but is currently *unfinished* as it needs a backend endpoint
+      // if (data.links) {
+      //   const dlButton = document.createElement("button")
+      //   dlButton.classList.add("download-button")
+      //   dlButton.innerText = "Download photo"
+      //   dlButton.addEventListener("click", onDownloadClick(data.links!))
+      //   creditLinkContainer?.appendChild(dlButton)
+      // }
     })
     .catch((error) => {
       console.error({ error })
     })
+}
+
+const onDownloadClick = (links: { download: string, download_location: string }) => () => {
+  // TODO: This will need a backend endpoint
+  console.warn("Download button is not implemented")
 }
 
 document.getElementById("search-button")?.addEventListener("click", onInputChange)
