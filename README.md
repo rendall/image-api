@@ -19,9 +19,10 @@ A call to `/api/image?query=lime&size=regular` returns a json-formatted response
 }
 ```
 
-Which links to this image:
+Which represents this image:
 
 ![lime fruits](https://images.unsplash.com/photo-1578855691621-8a08ea00d1fb?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=500&fit=max&ixid=eyJhcHBfaWQiOjE3NTI1NX0)
+Photographer: [Victor Fiqueroa](https://creativeservices.io)
 
 ## Query parameters
 
