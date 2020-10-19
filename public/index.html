@@ -5,6 +5,17 @@
   <title>Image API</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
+    body {
+      color: cornsilk;
+      background-color: dimgray;
+      font-family: sans-serif;
+    }
+
+    a {
+      color: floralwhite;
+      font-weight: bold;
+    }
+
     img {
       background-repeat: no-repeat;
       background-size: cover;
@@ -36,7 +47,11 @@
     }
 
     .credit-link-container.is-on {
-      display: block;
+      display: flex;
+    }
+
+    .download-button {
+      margin-left: 2rem;
     }
   </style>
   <script src="./blurhash.js" type="module"></script>
@@ -44,14 +59,15 @@
 
 <body>
   <h1>Image API</h1>
-  <p>This is a small frontend to the open-source <a href="https://github.com/rendall/image-api/">Image API</a> which
-    itself a wrapper for <a href="https://unsplash.com">Unsplash</a>, the image-as-a-service provider</p>
+  <p>This is a minimal frontend to demonstrate the open-source <a href="https://github.com/rendall/image-api/">Image API</a> which
+    itself a wrapper for the <a href="https://unsplash.com/developers">API</a> of <a href="https://unsplash.com">Unsplash</a>, the image-as-a-service provider</p>
   <p>Enter a search term below:</p>
   <input id="query-input" />
   <button id="search-button">Search</button>
   <div id="image-container"><img id="image" /></div>
   <div class="credit-link-container">
     Photographer: <a id="credit-link"></a>
+    <button class="download-button">Download photo</button>
   </div>
   <code id="code"></code>
   <p class="rate-limit">There are <span id="remaining">50</span> requests
