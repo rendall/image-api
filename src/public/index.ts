@@ -64,7 +64,10 @@ const onInputChange = () => {
 
   uiReset()
 
-  fetch(`.netlify/functions/image?query=${value}&size=regular`)
+  const progress = document.createElement("progress") as HTMLProgressElement
+  document.getElementById("code")?.appendChild(progress)
+
+  fetch(`.netlify/functions/image?query=${value}&size=regular&fields=description`)
     .then(tap)
     .then((response: Response) => {
       if (response.status !== 200) {
@@ -82,6 +85,7 @@ const onInputChange = () => {
       if (!data) return
       const dataURL = blurhashToDataURL(data.blur_hash, data.blur_hash_width, data.blur_hash_height)
       const img = document.createElement("img") as HTMLImageElement
+
       document.getElementById("image-container")?.appendChild(img)
 
       img.setAttribute("id", "image")
@@ -165,8 +169,11 @@ const onInputChange = () => {
       //   creditLinkContainer?.appendChild(dlButton)
       // }
     })
-    .catch((error) => {
+    .catch((error:Error) => {
       console.error({ error })
+      const code = document.getElementById("code") as HTMLDivElement
+      code.innerHTML = `${error.name}: ${error.message} ${error.stack}`
+      
     })
 }
 
