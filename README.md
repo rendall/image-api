@@ -110,7 +110,28 @@ Then visit <http://localhost:8080>
 
 Unsplash returns a [blurhash](https://blurha.sh) string which can be decoded into a blurred representation of the image while it loads. The (really, minimal) frontend implements this. The main trick is to convert it to a `base64` data url and use it as the loading image's `background-image`. When the `src` is loaded, it covers the `background-image`
 
-### Source
+### Project structure
 
-The API `/image` endpoint source code is in the </public/src-functions> directory
+All `.ts` source code is in [./src](./src) and the frontend is expected to be served from [./public](./public)
+
+The build process creates two directories: a `/src-functions` directory, which is a secondary step before the lambda-functions are compiled and moved to `/functions`
+
+#### Build
+
+The project is written with TypeScript. To compile the source code into javascript: `npx tsc`
+
+This will also copy the directory structure under [./src](/src) into [./](./), e.g. `.ts` files in [./src/public](/src/public) will be compiled into `.js` files and moved into [./public](/public). Same for [./public/src-functions](./public/src-functions)
+
+To compile the `.js` files [./src-functions](./src-functions) into lambda functions (for Netlify) type `npx netlify-lambda build src-functions` which will move the compiled files into [./functions](./functions)
+
+Note that the command `npm build` will do both of those commands and once, and is the command that Netifly uses in its deployment build step
+
+#### Source code
+
+The API `/image` endpoint source code is [./src/src-functions/image.ts](./src/src-functions/image.ts)
+
+The frontend javascript sourcecode is in [./src/public/](./src/public/)
+
+* [./src/public/blurhash.ts](./src/public/blurhash.ts) is a decode script derived from the blurhash repo that can be used without a bundler
+* [./src/public/index.ts](./src/public/index.ts) drives the frontend UI
   
