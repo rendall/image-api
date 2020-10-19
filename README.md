@@ -21,60 +21,9 @@ A call to `/api/image?query=lime&size=regular` returns a json-formatted response
 
 Which links to this image:
 
-![lime fruits](https://images.unsplash.com/photo-1578855691621-8a08ea00d1fb?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max&ixid=eyJhcHBfaWQiOjE3NTI1NX0)
+![lime fruits](https://images.unsplash.com/photo-1578855691621-8a08ea00d1fb?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=500&fit=max&ixid=eyJhcHBfaWQiOjE3NTI1NX0)
 
-## Installation
-
-This project is designed to be used directly in a current project by an experienced developer, so copy all files, merging and adjusting as necessary. Or, to run a local version:
-
-* `git clone https://github.com/rendall/image-api`
-* `cd image-api`
-* `npm install`
-* `npm start`
-* Visit <http://localhost:9000/.netlify/functions/image?term=lime&type=regular>
-
-## Unsplash
-
-[Unsplash](https://unsplash.com/) is an image-as-a-service provider. The project is a backend wrapper for the [Unsplash API](https://unsplash.com/documentation)
-
-### API access key
-
-Using *Unsplash* with this project requires an API access key, which can be acquired for free by following these instructions <https://unsplash.com/documentation#creating-a-developer-account>
-
-Note that the Unsplash Terms of Service requires the access key to be kept confidential. This project uses [dotenv](https://github.com/motdotla/dotenv) for the access key:
-
-* Copy the [.env.example](.env.example) file and rename it to `.env` (remove the `.example` part)
-* Go to <https://unsplash.com/oauth/applications>
-  * Click "New Application"
-  * fill out the forms
-  * read and accept the agreements
-  * find the *Keys* section
-  * copy the *Access Key* which looks something like this `Zqgh-FOwN42Aq_Y2RN_tx]KtHAx7Ct`
-* Paste the access key into `.env`, replacing the `your-unsplash-api-key-here` with the copied API access key, so it should look something like this:
-
-`UNSPLASH_API=Zqgh-FOwN42Aq_Y2RN_tx]KtHAx7Ct`
-
-## Netlify / AWS Lambda
-
-The endpoint is served from a [lambda function](https://aws.amazon.com/lambda/) but can be modified to be served from anywhere
-
-### Netlify
-
-[Netlify](https://netlify.com) is free-tier serverless hosting service. To serve this project from Netlify:
-
-* [Fork](https://guides.github.com/activities/forking/) this repo
-* [Sign up](https://app.netlify.com/signup) for a free account at Netlify
-* [Create a new site](https://app.netlify.com/start)
-* Press the *Github* button under *Continuous Deployment*
-* Authorize the [Netlify App](https://github.com/apps/netlify/installations/new)
-* Under *Continuous Deployment: GitHub App* select the fork of this project
-* Click *Show advanced* and then *New variable*
-* Under *VARIABLE_NAME* enter `UNSPLASH_API`
-* Under its corresponding value enter the Unsplash API access key
-* Click *Deploy Site*
-* After a few moments the site is deployed
-
-### Query parameters
+## Query parameters
 
 Here are the available [query string](https://en.wikipedia.org/wiki/Query_string) parameters:
 
@@ -97,7 +46,65 @@ Here are the available [query string](https://en.wikipedia.org/wiki/Query_string
   * I'm happy to consider adding those. [Please create an issue](https://github.com/rendall/image-api/issues/new) and ask
   * Also happy to consider a pull request
 
-### Frontend
+## Unsplash
+
+[Unsplash](https://unsplash.com/) is an image-as-a-service provider. The project is a backend wrapper for the [Unsplash API](https://unsplash.com/documentation)
+
+### API access key
+
+Using *Unsplash* with this project requires an API access key, which can be acquired for free by following these instructions <https://unsplash.com/documentation#creating-a-developer-account>
+
+Note that the Unsplash Terms of Service requires the access key to be kept confidential. This project uses [dotenv](https://github.com/motdotla/dotenv) for the access key:
+
+* Copy the [.env.example](.env.example) file and rename it to `.env` (remove the `.example` part)
+* Go to <https://unsplash.com/oauth/applications>
+  * Click "New Application"
+  * fill out the forms
+  * read and accept the agreements
+  * find the *Keys* section
+  * copy the *Access Key* which looks something like this `Zqgh-FOwN42Aq_Y2RN_tx]KtHAx7Ct`
+* Paste the access key into `.env`, replacing the `your-unsplash-api-key-here` with the copied API access key, so it should look something like this:
+
+`UNSPLASH_API=Zqgh-FOwN42Aq_Y2RN_tx]KtHAx7Ct`
+
+## blurha.sh
+
+Unsplash returns a [blurhash](https://blurha.sh) string which can be decoded into a blurred representation of the image while it loads. The (really, minimal) frontend implements this. The main trick is to convert it to a `base64` data url and use it as the loading image's `background-image`. When the `src` is loaded, it covers the `background-image` For more information [q.v. source code](https://github.com/rendall/image-api/blob/3c9da2922e261502783f811116f514cf5705e13c/src/public/index.ts#L83)
+
+## Installation
+
+* Copy all files, merging and adjusting as necessary.
+
+Or, to run a local version:
+
+* `git clone https://github.com/rendall/image-api`
+* `cd image-api`
+* `npm install`
+* Follow the instructions under [API Access Key](#api-access-key)
+* `npm start`
+* Visit <http://localhost:9000/.netlify/functions/image?term=lime&type=regular>
+
+### Netlify / AWS Lambda
+
+The endpoint is served from a [lambda function](https://aws.amazon.com/lambda/) but can be modified to be served from anywhere
+
+### Netlify
+
+[Netlify](https://netlify.com) is free-tier serverless hosting service. To serve this project from Netlify:
+
+* [Fork](https://guides.github.com/activities/forking/) this repo
+* [Sign up](https://app.netlify.com/signup) for a free account at Netlify
+* [Create a new site](https://app.netlify.com/start)
+* Press the *Github* button under *Continuous Deployment*
+* Authorize the [Netlify App](https://github.com/apps/netlify/installations/new)
+* Under *Continuous Deployment: GitHub App* select the fork of this project
+* Click *Show advanced* and then *New variable*
+* Under *VARIABLE_NAME* enter `UNSPLASH_API`
+* Under its corresponding value enter the Unsplash API access key
+* Click *Deploy Site*
+* After a few moments the site is deployed
+
+## Frontend
 
 [./src/public/](./src/public/) holds a minimal frontend client with a simple UI as a demo for the backend. To run it locally, open two terminals and run these commands simultaneously, one in each terminal:
 
@@ -106,17 +113,13 @@ Here are the available [query string](https://en.wikipedia.org/wiki/Query_string
 
 Then visit <http://localhost:8080>
 
-### blurha.sh
-
-Unsplash returns a [blurhash](https://blurha.sh) string which can be decoded into a blurred representation of the image while it loads. The (really, minimal) frontend implements this. The main trick is to convert it to a `base64` data url and use it as the loading image's `background-image`. When the `src` is loaded, it covers the `background-image`
-
-### Project structure
+## Project structure
 
 All `.ts` source code is in [./src](./src) and the frontend is expected to be served from [./public](./public)
 
 The build process creates two directories: a `/src-functions` directory, which is a secondary step before the lambda-functions are compiled and moved to `/functions`
 
-#### Build
+### Build
 
 The project is written with TypeScript. To compile the source code into javascript: `npx tsc`
 
@@ -126,7 +129,7 @@ To compile the `.js` files [./src-functions](./src-functions) into lambda functi
 
 Note that the command `npm build` will do both of those commands and once, and is the command that Netifly uses in its deployment build step
 
-#### Source code
+### Source code
 
 The API `/image` endpoint source code is [./src/src-functions/image.ts](./src/src-functions/image.ts)
 
@@ -134,4 +137,7 @@ The frontend javascript sourcecode is in [./src/public/](./src/public/)
 
 * [./src/public/blurhash.ts](./src/public/blurhash.ts) is a decode script derived from the blurhash repo that can be used without a bundler
 * [./src/public/index.ts](./src/public/index.ts) drives the frontend UI
-  
+
+## Issues and Contributing
+
+Discussion and issues are welcome!
