@@ -77,7 +77,7 @@ The `blur_hash` of image above is `L3E;9J?q?EIsBX9OMzov#DxZI;_G`, for instance, 
 
 <img alt="blurred lime fruits" width="250" src="./docs/blurred_lime.png">
 
-For more information about how this is implemented in this project [q.v. commented source code](https://github.com/rendall/image-api/blob/3c9da2922e261502783f811116f514cf5705e13c/src/public/index.ts#L83) or feel free to ask me any questions
+For more information about how this is implemented in this project, read the [blurha.sh](https://blurha.sh) website and [q.v. commented source code](https://github.com/rendall/image-api/blob/3c9da2922e261502783f811116f514cf5705e13c/src/public/index.ts#L83) or feel free to ask me any questions
 
 ## Installation
 
