@@ -22,6 +22,7 @@ A call to `/api/image?query=lime` returns a json-formatted response object like 
 Which represents this image:
 
 ![lime fruits](https://images.unsplash.com/photo-1578855691621-8a08ea00d1fb?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=500&fit=max&ixid=eyJhcHBfaWQiOjE3NTI1NX0)
+
 Photographer: [Victor Fiqueroa](https://creativeservices.io)
 
 ## Query parameters
@@ -74,7 +75,7 @@ Unsplash returns a [blurhash](https://blurha.sh) string which can be decoded int
 
 The `blur_hash` of image above is `L3E;9J?q?EIsBX9OMzov#DxZI;_G`, for instance, which decodes to this:
 
-![blurred lime fruits](./docs/blurred_lime.png)
+<img alt="blurred lime fruits" width="250" src="./docs/blurred_lime.png">
 
 For more information about how this is implemented in this project [q.v. commented source code](https://github.com/rendall/image-api/blob/3c9da2922e261502783f811116f514cf5705e13c/src/public/index.ts#L83) or feel free to ask me any questions
 
