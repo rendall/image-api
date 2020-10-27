@@ -59,7 +59,9 @@ const uiReset = () => {
 
 const onInputChange = () => {
   const input = document.getElementById("query-input") as HTMLInputElement
-  const value = input.value
+  const value = input.value.trim()
+  if (value === "") return
+
   const tap = (x: any) => { console.info(x); return x }
 
   uiReset()
